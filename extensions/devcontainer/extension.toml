@@ -1,0 +1,34 @@
+id = "devcontainer"
+name = "Dev Container"
+description = "Enables remote development in containers using Dev Container specification"
+version = "0.1.0"
+schema_version = 1
+authors = ["Zed Community"]
+repository = "https://github.com/zed-industries/zed"
+
+[slash_commands.devcontainer-open]
+description = "Open a project in a devcontainer"
+requires_argument = true
+
+[slash_commands.devcontainer-rebuild]
+description = "Rebuild the current devcontainer"
+requires_argument = false
+
+[slash_commands.devcontainer-attach]
+description = "Attach to an existing devcontainer"
+requires_argument = true
+
+[[capabilities]]
+kind = "process:exec"
+command = "docker"
+args = ["**"]
+
+[[capabilities]]
+kind = "process:exec"
+command = "podman"
+args = ["**"]
+
+[[capabilities]]
+kind = "process:exec"
+command = "ssh"
+args = ["**"]

@@ -209,6 +209,7 @@ members = [
     # Extensions
     #
 
+    "extensions/devcontainer",
     "extensions/glsl",
     "extensions/html",
     "extensions/proto",
