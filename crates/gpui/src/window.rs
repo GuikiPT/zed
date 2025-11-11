@@ -1104,7 +1104,7 @@ impl Window {
                                 callback(window, cx);
                             }
                         })
-                        .log_err();
+                        .ok();
                 }
 
                 // Keep presenting the current scene for 1 extra second since the
@@ -1123,19 +1123,19 @@ impl Window {
                                 // drop the arena elements after present to reduce latency
                                 arena_clear_needed.clear();
                             })
-                            .log_err();
+                            .ok();
                     })
                 } else if needs_present {
                     handle
                         .update(&mut cx, |_, window, _| window.present())
-                        .log_err();
+                        .ok();
                 }
 
                 handle
                     .update(&mut cx, |_, window, _| {
                         window.complete_frame();
                     })
-                    .log_err();
+                    .ok();
             }
         }));
         platform_window.on_resize(Box::new({
@@ -1143,7 +1143,7 @@ impl Window {
             move |_, _| {
                 handle
                     .update(&mut cx, |_, window, cx| window.bounds_changed(cx))
-                    .log_err();
+                    .ok();
             }
         }));
         platform_window.on_moved(Box::new({
@@ -1151,7 +1151,7 @@ impl Window {
             move || {
                 handle
                     .update(&mut cx, |_, window, cx| window.bounds_changed(cx))
-                    .log_err();
+                    .ok();
             }
         }));
         platform_window.on_appearance_changed(Box::new({
@@ -1159,7 +1159,7 @@ impl Window {
             move || {
                 handle
                     .update(&mut cx, |_, window, cx| window.appearance_changed(cx))
-                    .log_err();
+                    .ok();
             }
         }));
         platform_window.on_active_status_change(Box::new({
@@ -1180,7 +1180,7 @@ impl Window {
 
                         SystemWindowTabController::update_last_active(cx, window.handle.id);
                     })
-                    .log_err();
+                    .ok();
             }
         }));
         platform_window.on_hover_status_change(Box::new({
@@ -1191,7 +1191,7 @@ impl Window {
                         window.hovered.set(active);
                         window.refresh();
                     })
-                    .log_err();
+                    .ok();
             }
         }));
         platform_window.on_input({
@@ -1199,7 +1199,7 @@ impl Window {
             Box::new(move |event| {
                 handle
                     .update(&mut cx, |_, window, cx| window.dispatch_event(event, cx))
-                    .log_err()
+                    .ok()
                     .unwrap_or(DispatchEventResult::default())
             })
         });
@@ -1215,7 +1215,7 @@ impl Window {
                         }
                         None
                     })
-                    .log_err()
+                    .ok()
                     .unwrap_or(None)
             })
         });
@@ -1226,7 +1226,7 @@ impl Window {
                     .update(&mut cx, |_, _window, cx| {
                         SystemWindowTabController::move_tab_to_new_window(cx, handle.window_id());
                     })
-                    .log_err();
+                    .ok();
             })
         });
         platform_window.on_merge_all_windows({
@@ -1236,7 +1236,7 @@ impl Window {
                     .update(&mut cx, |_, _window, cx| {
                         SystemWindowTabController::merge_all_windows(cx, handle.window_id());
                     })
-                    .log_err();
+                    .ok();
             })
         });
         platform_window.on_select_next_tab({
@@ -1246,7 +1246,7 @@ impl Window {
                     .update(&mut cx, |_, _window, cx| {
                         SystemWindowTabController::select_next_tab(cx, handle.window_id());
                     })
-                    .log_err();
+                    .ok();
             })
         });
         platform_window.on_select_previous_tab({
@@ -1256,7 +1256,7 @@ impl Window {
                     .update(&mut cx, |_, _window, cx| {
                         SystemWindowTabController::select_previous_tab(cx, handle.window_id())
                     })
-                    .log_err();
+                    .ok();
             })
         });
         platform_window.on_toggle_tab_bar({
@@ -1267,7 +1267,7 @@ impl Window {
                         let tab_bar_visible = window.platform_window.tab_bar_visible();
                         SystemWindowTabController::set_visible(cx, tab_bar_visible);
                     })
-                    .log_err();
+                    .ok();
             })
         });
 
@@ -1555,7 +1555,7 @@ impl Window {
                     let node_id = window.focus_node_id_in_rendered_frame(focus_id);
                     window.dispatch_action_on_node(node_id, action.as_ref(), cx);
                 })
-                .log_err();
+                .ok();
         })
     }
 
@@ -3919,7 +3919,7 @@ impl Window {
                     window.pending_input_changed(cx);
                     window.replay_pending_input(to_replay, cx)
                 })
-                .log_err();
+                .ok();
             }));
             self.pending_input = Some(currently_pending);
             self.pending_input_changed(cx);

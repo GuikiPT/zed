@@ -26,18 +26,16 @@ impl RemoteVideoTrackView {
 
         #[cfg(not(target_os = "macos"))]
         {
-            use util::ResultExt;
-
             let window_handle = window.window_handle();
             cx.on_release(move |this, cx| {
                 if let Some(frame) = this.previous_rendered_frame.take() {
                     window_handle
-                        .update(cx, |_, window, _cx| window.drop_image(frame).log_err())
+                        .update(cx, |_, window, _cx| window.drop_image(frame))
                         .ok();
                 }
                 if let Some(frame) = this.current_rendered_frame.take() {
                     window_handle
-                        .update(cx, |_, window, _cx| window.drop_image(frame).log_err())
+                        .update(cx, |_, window, _cx| window.drop_image(frame))
                         .ok();
                 }
             })
@@ -90,8 +88,7 @@ impl Render for RemoteVideoTrackView {
                 if let Some(frame) = self.previous_rendered_frame.take() {
                     // Only drop the frame if it's not also the current frame.
                     if frame.id != current_rendered_frame.id {
-                        use util::ResultExt as _;
-                        _window.drop_image(frame).log_err();
+                        _ = _window.drop_image(frame);
                     }
                 }
                 self.previous_rendered_frame = Some(current_rendered_frame)
